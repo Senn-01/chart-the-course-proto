@@ -13,7 +13,7 @@ const mockUser: User = {
   updated_at: new Date().toISOString(),
   confirmed_at: new Date().toISOString(),
   email_confirmed_at: new Date().toISOString(),
-  phone: null,
+  phone: undefined,
   last_sign_in_at: new Date().toISOString(),
   role: 'authenticated',
 }

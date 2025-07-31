@@ -11,8 +11,8 @@ export default async (req: Request, context: Context) => {
     const { audioUrl } = await req.json();
 
     // Create Supabase client
-    const supabaseUrl = Netlify.env.get('NEXT_PUBLIC_SUPABASE_URL')!;
-    const supabaseServiceKey = Netlify.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get the user from the Authorization header
