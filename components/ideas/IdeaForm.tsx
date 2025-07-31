@@ -40,7 +40,7 @@ export function IdeaForm({ onSubmit, onCancel }: IdeaFormProps) {
         tags: tagArray.length > 0 ? tagArray : undefined,
       })
 
-      // Create idea
+      // Create idea - in dev mode with RLS disabled, we can insert without user_id
       const { data: newIdea, error: createError } = await supabase
         .from('ideas')
         .insert(data)

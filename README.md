@@ -19,7 +19,7 @@ A minimalist SaaS web application for knowledge workers, designed as a strategic
 - **Styling**: Tailwind CSS
 - **Backend**: Supabase (PostgreSQL, Auth, Edge Functions, Storage)
 - **AI**: OpenAI (GPT-4o-mini, Whisper)
-- **Deployment**: Vercel
+- **Deployment**: Netlify
 
 ## Getting Started
 

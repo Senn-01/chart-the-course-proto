@@ -64,13 +64,31 @@ export function ChartContent({ initialInitiatives }: ChartContentProps) {
   }
 
   const handleInitiativeUpdate = async (id: string, updates: Partial<Initiative>) => {
-    const { error } = await supabase
+    // Optimistically update the UI
+    setInitiatives((current) =>
+      current.map((initiative) =>
+        initiative.id === id ? { ...initiative, ...updates } : initiative
+      )
+    )
+
+    const { data, error } = await supabase
       .from('initiatives')
       .update(updates)
       .eq('id', id)
+      .select()
+      .single()
 
     if (error) {
       console.error('Error updating initiative:', error)
+      // Revert the optimistic update on error
+      const originalInitiative = initiatives.find(i => i.id === id)
+      if (originalInitiative) {
+        setInitiatives((current) =>
+          current.map((initiative) =>
+            initiative.id === id ? originalInitiative : initiative
+          )
+        )
+      }
     }
   }
 

@@ -63,6 +63,14 @@ export function TerritoriesContent({ initialIdeas }: TerritoriesContentProps) {
     // The real-time subscription will handle adding it to the list
   }
 
+  const handleIdeaStatusChange = (id: string, newStatus: Idea['status']) => {
+    setIdeas((current) =>
+      current.map((idea) =>
+        idea.id === id ? { ...idea, status: newStatus } : idea
+      )
+    )
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
@@ -93,7 +101,11 @@ export function TerritoriesContent({ initialIdeas }: TerritoriesContentProps) {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredIdeas.map((idea) => (
-          <IdeaCard key={idea.id} idea={idea} />
+          <IdeaCard 
+            key={idea.id} 
+            idea={idea} 
+            onStatusChange={handleIdeaStatusChange}
+          />
         ))}
         
         {filteredIdeas.length === 0 && (

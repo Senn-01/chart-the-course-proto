@@ -71,9 +71,17 @@ export function ExpeditionContent({ initialSessions, initiatives }: ExpeditionCo
   }, [])
 
   const handleSessionStart = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      console.error('User not authenticated')
+      return
+    }
+
     const { data, error } = await supabase
       .from('work_sessions')
       .insert({
+        user_id: user.id,
         initiative_id: selectedInitiative,
         duration_minutes: 90,
         started_at: new Date().toISOString(),
@@ -84,11 +92,29 @@ export function ExpeditionContent({ initialSessions, initiatives }: ExpeditionCo
 
     if (error) {
       console.error('Error starting session:', error)
+    } else if (data) {
+      // Immediately update the UI
+      setSessions((current) => [data, ...current])
+      setActiveSession(data)
     }
   }
 
   const handleSessionEnd = async () => {
     if (!activeSession) return
+
+    // Optimistically update the UI
+    const updatedSession = {
+      ...activeSession,
+      ended_at: new Date().toISOString(),
+      completed: true,
+    }
+    
+    setSessions((current) =>
+      current.map((session) =>
+        session.id === activeSession.id ? updatedSession : session
+      )
+    )
+    setActiveSession(null)
 
     const { error } = await supabase
       .from('work_sessions')
@@ -100,6 +126,13 @@ export function ExpeditionContent({ initialSessions, initiatives }: ExpeditionCo
 
     if (error) {
       console.error('Error ending session:', error)
+      // Revert on error
+      setSessions((current) =>
+        current.map((session) =>
+          session.id === activeSession.id ? activeSession : session
+        )
+      )
+      setActiveSession(activeSession)
     }
   }
 

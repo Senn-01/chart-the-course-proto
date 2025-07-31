@@ -94,9 +94,17 @@ export function LogContent({ initialEntries, todaysEntry }: LogContentProps) {
   }
 
   const handleManualEntry = async (content: any) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      console.error('User not authenticated')
+      return
+    }
+
     const { data, error } = await supabase
       .from('log_entries')
       .insert({
+        user_id: user.id,
         content,
         transcription: null,
         audio_url: null,
@@ -106,6 +114,10 @@ export function LogContent({ initialEntries, todaysEntry }: LogContentProps) {
 
     if (error) {
       console.error('Error creating log entry:', error)
+    } else if (data) {
+      // Immediately update the UI
+      setEntries((current) => [data, ...current])
+      setCurrentEntry(data)
     }
   }
 

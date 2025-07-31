@@ -9,22 +9,34 @@ type Idea = Database['public']['Tables']['ideas']['Row']
 
 interface IdeaCardProps {
   idea: Idea
+  onStatusChange?: (id: string, newStatus: Idea['status']) => void
 }
 
-export function IdeaCard({ idea }: IdeaCardProps) {
+export function IdeaCard({ idea, onStatusChange }: IdeaCardProps) {
   const [isUpdating, setIsUpdating] = useState(false)
   const supabase = createClient()
 
   const handleStatusChange = async (newStatus: Idea['status']) => {
     setIsUpdating(true)
     
-    const { error } = await supabase
+    // Optimistically update the UI
+    if (onStatusChange) {
+      onStatusChange(idea.id, newStatus)
+    }
+    
+    const { data, error } = await supabase
       .from('ideas')
       .update({ status: newStatus })
       .eq('id', idea.id)
+      .select()
+      .single()
 
     if (error) {
       console.error('Error updating idea status:', error)
+      // Revert the optimistic update on error
+      if (onStatusChange) {
+        onStatusChange(idea.id, idea.status)
+      }
     }
     
     setIsUpdating(false)
