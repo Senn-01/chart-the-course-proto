@@ -10,6 +10,12 @@ interface PatternInsightsProps {
 }
 
 export function PatternInsights({ sessions }: PatternInsightsProps) {
+  const formatHour = (hour: number) => {
+    if (hour === 0) return '12 AM'
+    if (hour === 12) return '12 PM'
+    return hour > 12 ? `${hour - 12} PM` : `${hour} AM`
+  }
+
   const insights = useMemo(() => {
     // Best day of week
     const dayStats = sessions.reduce((acc, session) => {
@@ -87,12 +93,6 @@ export function PatternInsights({ sessions }: PatternInsightsProps) {
       currentStreak,
     }
   }, [sessions])
-
-  const formatHour = (hour: number) => {
-    if (hour === 0) return '12 AM'
-    if (hour === 12) return '12 PM'
-    return hour > 12 ? `${hour - 12} PM` : `${hour} AM`
-  }
 
   const insights_items = [
     {

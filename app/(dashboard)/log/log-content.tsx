@@ -94,13 +94,15 @@ export function LogContent({ initialEntries, todaysEntry }: LogContentProps) {
   }
 
   const handleManualEntry = async (content: any) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('log_entries')
       .insert({
         content,
         transcription: null,
         audio_url: null,
       })
+      .select()
+      .single()
 
     if (error) {
       console.error('Error creating log entry:', error)

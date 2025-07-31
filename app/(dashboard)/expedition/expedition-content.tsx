@@ -76,6 +76,8 @@ export function ExpeditionContent({ initialSessions, initiatives }: ExpeditionCo
       .insert({
         initiative_id: selectedInitiative,
         duration_minutes: 90,
+        started_at: new Date().toISOString(),
+        completed: false,
       })
       .select()
       .single()
