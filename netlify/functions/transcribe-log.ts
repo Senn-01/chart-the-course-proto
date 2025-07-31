@@ -2,14 +2,9 @@ import type { Context, Config } from "@netlify/functions";
 import { createClient } from '@supabase/supabase-js';
 
 export default async (req: Request, context: Context) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  };
-
-  // Handle CORS
+  // Handle OPTIONS request
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { status: 200 });
   }
 
   try {
@@ -55,7 +50,7 @@ export default async (req: Request, context: Context) => {
     return new Response(
       JSON.stringify({ data }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         status: 200,
       }
     );
@@ -63,7 +58,7 @@ export default async (req: Request, context: Context) => {
     return new Response(
       JSON.stringify({ error: error.message }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         status: 400,
       }
     );

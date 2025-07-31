@@ -20,10 +20,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+# Redirects are handled by function config paths
 
 [context.production.environment]
   NEXT_PUBLIC_APP_URL = "https://chart-the-course-proto.netlify.app"
